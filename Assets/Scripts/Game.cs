@@ -88,6 +88,6 @@ public class Game : MonoBehaviour
 
     public void Win()
     {
-        NewLevel();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Finale");
     }
 }

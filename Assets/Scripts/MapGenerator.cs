@@ -12,6 +12,7 @@ public class MapGenerator : MonoBehaviour
     public Room roomPrefab;
     public Room hallwayPrefab;
     public Pickup pickupPrefab;
+    public Goal goalPrefab;
     public DungeonGenerator dungeonGenerator;
 
     public System.Action OnReady;
@@ -39,10 +40,42 @@ public class MapGenerator : MonoBehaviour
     void OnDungeonGenerated()
     {
         CreateRooms();
+        FillRooms();
         OnReady?.Invoke();
     }
 
     public T RandomValue<T>(HashSet<T> bag) => bag.ElementAt(Random.Range(0, bag.Count));
+
+    void FillRooms()
+    {
+        List<DungeonRoom> rooms = dungeonGenerator.Rooms;
+        rooms.ForEach(room =>
+        {
+            if (room.IsVisible) FillRoom(room);
+        });
+    }
+
+    void FillRoom(DungeonRoom room)
+    {
+        if (room.IsEndRoom)
+        {
+            Debug.Log("Found starting room");
+            PlaceInRoomCenter(room, Instantiate<Transform>(goalPrefab.transform, transform));
+        }
+        else if (room.IsStartRoom)
+        {
+
+        }
+        else
+        {
+            PlaceInRoomCenter(room, Instantiate<Transform>(pickupPrefab.transform, transform));
+        }
+    }
+
+    public void PlaceInRoomCenter(DungeonRoom room, Transform t)
+    {
+        t.position = ToWorld(room.Center);
+    }
 
     void CreateRooms()
     {
