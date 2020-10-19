@@ -6,6 +6,7 @@ public class Game : MonoBehaviour
 {
     public MapGenerator mapGenerator;
     public Player player;
+    public LookAt arrowHint;
     public TextManager textManager;
     public AudioSource music;
     public AudioSource coin;
@@ -15,7 +16,11 @@ public class Game : MonoBehaviour
 
     public float gameStartTime = 0.0f;
 
+    protected DungeonRoom startRoom;
+
     public static Game singleton;
+
+    public Fungus.Flowchart flowChart;
 
     protected List<string> introText = new List<string>()
     {
@@ -66,9 +71,17 @@ public class Game : MonoBehaviour
             if (room.IsStartRoom)
             {
                 Debug.Log("Found starting room");
-                PlaceInRoomCenter(room);
+                startRoom = room;
+                PlaceInRoomCenter(startRoom);
             }
+            if (room.IsEndRoom)
+            {
+                arrowHint.target = mapGenerator.goal.transform;
+            }
+
         });
+
+        flowChart.ExecuteBlock("FadeIn");
     }
 
     public void PlaceInRoomCenter(DungeonRoom room)
@@ -82,12 +95,35 @@ public class Game : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            NewLevel();
+            Lose();
         }
     }
 
     public void Win()
     {
+        flowChart.ExecuteBlock("FadeOut");
+        Invoke("DoWin", 1.0f);
+    }
+
+    public void DoWin()
+    {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Finale");
+    }
+
+    public void Lose()
+    {
+        flowChart.ExecuteBlock("FadeOut");
+        Invoke("DoReset", 1.0f);
+    }
+
+    public void DoReset()
+    {
+        PlaceInRoomCenter(startRoom);
+        Invoke("DoFadeIn", 0.5f);
+    }
+
+    public void DoFadeIn()
+    {
+        flowChart.ExecuteBlock("FadeIn");
     }
 }

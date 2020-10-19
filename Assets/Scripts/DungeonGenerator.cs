@@ -8,7 +8,8 @@ public enum TileType
     Nothing = 0,
     Hallway = 1,
     Wall = 2,
-    Door = 3
+    Door = 3,
+    Lava = 4
 }
 
 public class DungeonGenerator : MonoBehaviour
@@ -35,7 +36,7 @@ public class DungeonGenerator : MonoBehaviour
     public int[,] Grid;
     //GameObject DungeonMapTexture;
 
-    RoomGenerator RoomGenerator;
+    public RoomGenerator RoomGenerator;
 
     public List<int> PrimaryRoomIDs;
     public List<int> SecondaryRoomIDs;

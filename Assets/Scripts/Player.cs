@@ -60,6 +60,9 @@ public class Player : MonoBehaviour
             charge = 0.0f;
             scoot = false;
         }
+
+        if (rb.velocity.magnitude > maxVelocity)
+            rb.velocity = rb.velocity.normalized * maxVelocity;
     }
 
     void LookTowards(Vector3 targetDirection, float speed)
